@@ -113,6 +113,7 @@ public class OracleDialect extends Dialect {
 		    String schema = params.getSchema();
 
             createDirectory(user, password, dumpFile.getParentFile());
+			System.out.println("START");
 			ProcessBuilder pb = new ProcessBuilder(
 					"expdp",
 					user + "/" + password,
@@ -121,7 +122,15 @@ public class OracleDialect extends Dialect {
 					"schemas=" + schema,
                     "reuse_dumpfiles=y",
                     "nologfile=y");
+			System.out.println("END");
+
 			pb.redirectErrorStream(true);
+
+			for(String pbParam:pb.command()) {
+				System.out.println(pbParam);
+
+			}
+
 			Process process = pb.start();
 
             Charset terminalCharset = System.getProperty("os.name").toLowerCase().contains("windows") ?
