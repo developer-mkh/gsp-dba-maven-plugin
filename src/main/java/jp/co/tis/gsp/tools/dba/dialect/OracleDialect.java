@@ -112,23 +112,26 @@ public class OracleDialect extends Dialect {
 		    String password = params.getPassword();
 		    String schema = params.getSchema();
 
+			// 接続文字列をurlから取り出す。
+			// urlは以下の形式と仮定
+			// jdbc:oracle:thin:@ホスト名:ポート番号/サービス名
+			String urlArray[] = url.split(":");
+			String connectionString = urlArray[urlArray.length - 2] + ":" + urlArray[urlArray.length - 1];
+
+
             createDirectory(user, password, dumpFile.getParentFile());
-			System.out.println("START");
 			ProcessBuilder pb = new ProcessBuilder(
 					"expdp",
-					user + "/" + password,
+					user + "/" + password + connectionString,
                     "directory=exp_dir",
 					"dumpfile=" + dumpFile.getName(),
 					"schemas=" + schema,
                     "reuse_dumpfiles=y",
                     "nologfile=y");
-			System.out.println("END");
-
 			pb.redirectErrorStream(true);
 
 			for(String pbParam:pb.command()) {
 				System.out.println(pbParam);
-
 			}
 
 			Process process = pb.start();
